@@ -47,12 +47,11 @@ module hirthJointTriangle ( rmax, teeth, height, shoulder=0, inlay=0, shift=0 ) 
 }
 
 // Hirth Joint with rectangular profile
-module hirthJointRectangle ( rmax, teeth, height, shoulder=0, inlay=0, shift=0 ) {
+module hirthJointRectangle ( rmax, teeth, height, shoulder=0, inlay=0, shift=0 ,rmin= 0) {
     alpha = atan( (height/2)/rmax );
     th = (rmax*tan(2*alpha)/cos(alpha));
     width = 2*PI*rmax/teeth;
-
-    hirthJoint ( hirthJointProfileRectangle(), rmax, teeth, height, shoulder, inlay, shift );
+    hirthJoint ( hirthJointProfileRectangle(), rmax, teeth, height, shoulder, inlay, shift,rmin );
 }
 
 module hirthJointPassage ( rmax, height, shoulder=0, inlay=0 ) {
@@ -68,9 +67,13 @@ module hirthJointPassage ( rmax, height, shoulder=0, inlay=0 ) {
 
 NB_MIN_NOZZLE = 3; // Minimal nb nozzle pass for a tooth width
 
-module hirthJoint ( profile, rmax, teeth, height, shoulder=0, inlay=0, shift=0 ) {
+module hirthJoint ( profile, rmax, teeth, height, shoulder=0, inlay=0, shift=0 ,irmin = 0) {
 
-    rmin  = NB_MIN_NOZZLE*nozzle()*teeth/(2*PI);
+    calRmin = NB_MIN_NOZZLE*nozzle()*teeth/(2*PI);
+    echo(calRmin);
+    rmin = irmin < calRmin ? calRmin:irmin;
+    echo(rmin);
+
     angle = 360/teeth;
     prf   = is_undef(profile) ? hirthJointProfileSinus(teeth) : profile;
 
